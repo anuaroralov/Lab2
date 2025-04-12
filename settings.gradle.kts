@@ -1,12 +1,9 @@
-import java.io.FileInputStream
-import java.util.Properties
-
-fun loadLocalProperties(rootDir: java.io.File): Properties {
-    val properties = Properties()
+pluginManagement {
+    val properties = java.util.Properties()
     val localPropertiesFile = rootDir.resolve("local.properties")
     if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
         try {
-            FileInputStream(localPropertiesFile).use { fis ->
+            java.io.FileInputStream(localPropertiesFile).use { fis ->
                 properties.load(fis)
             }
         } catch (e: Exception) {
@@ -15,16 +12,7 @@ fun loadLocalProperties(rootDir: java.io.File): Properties {
     } else {
         println("Warning: local.properties file not found at ${localPropertiesFile.absolutePath}")
     }
-    return properties
-}
 
-val localProperties = loadLocalProperties(rootDir)
-val gprUsername = localProperties.getProperty("gpr.user", "")
-val gprPassword = localProperties.getProperty("gpr.key", "")
-
-val githubPackagesUrl = "https://maven.pkg.github.com/Yerassyl1234/AndroidLab2"
-
-pluginManagement {
     repositories {
         google {
             content {
@@ -35,11 +23,41 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            name = "GitHubPackages_Plugins"
+            url = uri("https://maven.pkg.github.com/anuaroralov/Lab2")
+            credentials {
+                username = properties.getProperty("gpr.user", "")
+                password = properties.getProperty("gpr.key", "")
+            }
+        }
     }
 }
 dependencyResolutionManagement {
+    val properties = java.util.Properties()
+    val localPropertiesFile = rootDir.resolve("local.properties")
+    if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
+        try {
+            java.io.FileInputStream(localPropertiesFile).use { fis ->
+                properties.load(fis)
+            }
+        } catch (e: Exception) {
+            println("Warning: Could not load local.properties file: ${e.message}")
+        }
+    } else {
+        println("Warning: local.properties file not found at ${localPropertiesFile.absolutePath}")
+    }
+
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        maven {
+            name = "GitHubPackages_Deps"
+            url = uri("https://maven.pkg.github.com/anuaroralov/Lab2")
+            credentials {
+                username = properties.getProperty("gpr.user", "")
+                password = properties.getProperty("gpr.key", "")
+            }
+        }
         google()
         mavenCentral()
     }
@@ -47,3 +65,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Lab2"
 include(":app")
+include(":chatlibrary")
