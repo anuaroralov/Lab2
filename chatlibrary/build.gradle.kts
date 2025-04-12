@@ -29,7 +29,7 @@ val gprPassword = localProps.getProperty("gpr.key", "")
 
 android {
     namespace = "com.example.chatlibrary"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24

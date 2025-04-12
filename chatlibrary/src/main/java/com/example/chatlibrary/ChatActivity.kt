@@ -19,14 +19,12 @@ internal class ChatActivity : AppCompatActivity(), WebSocketManager.MessageListe
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d(TAG, "onCreate: Activity started")
-
-        setupRecyclerView()
         setupSendButton()
+        setupRecyclerView()
 
         webSocketManager.setMessageListener(this)
         webSocketManager.connect()
 
-        supportActionBar?.title = "WebSocket Chat"
     }
 
     private fun setupSendButton() {
